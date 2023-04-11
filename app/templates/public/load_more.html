@@ -1,0 +1,22 @@
+<!--Validando si paises es mayor a cero-->
+{% if list_personas|length > 0 %}
+<!--Recorriendo paises-->
+
+{% for persona in list_personas %}
+<tr id="{{persona.id_persona }}">
+  <td>{{ persona.id_persona}}</td>
+  <td>{{ persona.nombre }}</td>
+  <td>{{ persona.sexo }}</td>
+  <td>{{ persona.email }}</td>
+  <td>{{ persona.telefono }}</td>
+  <td>{{ persona.marca }}</td>
+  <td>$ {{ persona.saldo }}</td>
+  <td>{{ persona.activo }}</td>
+</tr>
+{% endfor %}
+<!--No hay registros-->
+{% else %}
+<tr>
+  <td colspan="3">No hay resultados</td>
+</tr>
+{% endif %}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cargando más registros desde BD</title>
+    <link
+      rel="shortcut icon"
+      href="{{url_for('static', filename ='assets/imgs/favicon.png')}}"
+      type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename ='assets/css/custom_paginate.css') }}" />
+    <style>
+      .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 100000000;
+        background: #cecece;
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-4">
+      <div class="row justify-content-md-center">
+        <div class="col-md-12 mt-3 mb-5">
+          <h2 class="text-center">
+            <strong
+              >Boton cargar más registros desde una BD
+              <hr
+            /></strong>
+          </h2>
+        </div>
+      </div>
+      <div class="row justify-content-md-center">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover" id="tabla-personas">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Sexo</th>
+                <th>Email</th>
+                <th>Movil</th>
+                <th>Marca</th>
+                <th>Saldo</th>
+                <th>Estatus</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for persona in list_personas %}
+              <tr id="{{persona.id_persona }}">
+                <td>{{ persona.id_persona}}</td>
+                <td>{{ persona.nombre }}</td>
+                <td>{{ persona.sexo }}</td>
+                <td>{{ persona.email }}</td>
+                <td>{{ persona.telefono }}</td>
+                <td>{{ persona.marca }}</td>
+                <td>$ {{ persona.saldo }}</td>
+                <td>{{ persona.activo }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-md-12 text-center mt-3 mb-2">
+          <button
+            type="button"
+            class="btn btn-info btnCargarMas"
+            onclick="cargarMas()">
+            Cargar mas registros
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      const cargarMas = async () => {
+        let cuerpo = document.body;
+
+        try {
+          const ultimoId = $("tbody tr:last").attr("id");
+          const response = await axios.get(`/loader_more/${ultimoId}`);
+
+          if (response.data.fin === 0) {
+            console.log("Se han cargado todos los registros.");
+            $("#tabla-personas tbody").html("");
+            $("#tabla-personas tbody").html(`
+              <tr>
+                <td colspan="7" style="text-align:center;color: red;font-weight: bold;">No hay Personas</td>
+              </tr>`);
+
+            btnMas = document.querySelector(".btnCargarMas");
+            btnMas.classList.remove("btn-primary");
+            btnMas.classList.add("btn-warning");
+            btnMas.setAttribute("disabled", true);
+            btnMas.textContent = "No hay más consignaciones";
+            return false;
+          }
+
+          // Desplazarse al final del contenedor
+          $("html, body").animate(
+            { scrollTop: $(".btnCargarMas").offset().top },
+            1000
+          );
+
+          cuerpo.classList.add("loader");
+          setTimeout(function () {
+            cuerpo.classList.remove("loader");
+          }, 300);
+
+          $("#tabla-personas tbody").append(response.data);
+        } catch (error) {
+          alert("error petición axios 😭");
+        } finally {
+          console.log("Consulta finalizada");
+        }
+      };
+
+      /*let capaCargando = document.querySelector(".contentLoading");
+      const cargarMas = async () => {
+        capaCargando.style.display = "block";
+        myLoading(true);
+        try {
+          const ultimoId = $("tbody tr:last").attr("id");
+          const response = await axios.get(`/loader_more/${ultimoId}`);
+
+          if (response.data.fin === 0) {
+            console.log("Se han cargado todos los registros.");
+            return false;
+          }
+
+          $("#tabla-paises tbody").append(response.data);
+        } catch (error) {
+          alert("error petición axios 😭");
+        } finally {
+          myLoading(false);
+          console.log("Consulta finalizada");
+        }
+      };*/
+
+      /*
+      //Usando Ajax
+       const cargarMas = () => {
+        let ultimoId = $("tbody tr:last").attr("id");
+
+        $.ajax({
+          url: "/loader_more/" + ultimoId,
+          method: "GET",
+          success: function (response) {
+            if (response.fin == 0) {
+              console.log("Se han cargado todos los registros.");
+              return false;
+            }
+
+            $("#tabla-paises tbody").append(response);
+          },
+          error: function () {
+            alert("error petición ajax  😭");
+          },
+        });
+      };*/
+    </script>
+  </body>
+</html>
