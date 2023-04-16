@@ -1,5 +1,5 @@
-`Pequeño desarrollo con Python 3 la idea es poder cargar mas registros desde una BD, sin recargar la
-pagina donde te encuentras, usando un emjemplo practico y facil de implementar en la vida real.`
+`🐍 Pequeño desarrollo con Python 3 la idea es poder cargar mas registros desde una BD, sin recargar la
+pagina donde te encuentras, usando un emjemplo practico y facil de implementar en la vida real. 🐍😁`
 
 # PASO 1, Crear mi entorno virtual
 
